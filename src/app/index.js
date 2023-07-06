@@ -29,8 +29,6 @@ mongoose.connect(URI)
 .then((err,data)=>{
     console.log("Database is connected on ",URI)
     app.listen(PORT,()=>{
-        
-        
         console.log(" Backend is Listening on port", PORT)
         
     }) ;

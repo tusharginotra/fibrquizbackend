@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema(
             lowercase: true,
             unique: true,
           },
-          quizes : [QuizSchema]
+          quizes : [String]
           ,
           userlist :
           [

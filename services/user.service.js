@@ -1,47 +1,61 @@
+const { get } = require("mongoose");
 const { User } = require("../models/user.model");
+const {createQuiz}= require("../services/quiz.service");
 
-const findUserByEmail = async (email)=>{
+
+const getUserByEmail = async function (email){
     try{
+        console.log(email)
         const result = await User.findOne({"email": email})
+        console.log(result)
         return result;
     }
     catch(err)
     {
         throw err;
     }
+};
+
+const addQuiz = async( id,email)=>
+{
+    const user = await getUserByEmail(email)
+    const quizes = user.quizes
+    quizes.push(id)
+    user.quizes = quizes
+    await user.save()
+    return user;
 }
+
 const createUser = async (body)=>{
     try{
-        // console.log(user)
         if( await User.findOne({email : body.email}))
-        {
-            const user = await User.findOne({email : body.email})
-            const quiz = body.quiz
-            const quizes = user.quizes;
-            quizes.push(quiz);
-            // console.log("quizpushed")
-            user.quizes = quizes
-            await user.save()
-            console.log("not saved")
-            data = await User.findOne({email: body.email})
-            return data
-            // throw new ApiError(httpStatus.OK, "Email already taken")
+        {   
+            const result = await createQuiz(body);
+            const id = result._id;
+            
+            const data = await addQuiz(id,body.email)
+            return data;
+
         }
         else
         {
-            // console.log("inside else",user)
-            console.log("inside else")
-            const data = await User.create({...user,});
-            data.save()
-            // console.log(data)
+            const result = await createQuiz(body)
+            const id = result._id
+           
+            const data = await User.create({name : body.name , email : body.email});
+            const quizes = data.quizes
+            quizes.push(id)
+            data.quizes = quizes
+            await data.save()
+            
             return data
         }
     }
     catch(err)
     {
-        console.log("inside catch")
         throw err;
     }
-}
+};
 
-module.exports = {findUserByEmail,createUser}
+
+module.exports = { getUserByEmail ,createUser};
