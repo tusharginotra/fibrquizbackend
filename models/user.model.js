@@ -17,15 +17,6 @@ const userSchema = mongoose.Schema(
             unique: true,
           },
           quizes : [String]
-          ,
-          userlist :
-          [
-            {
-                name : String,
-                email : String,
-                score : Number
-            }
-          ]
 
 
     }

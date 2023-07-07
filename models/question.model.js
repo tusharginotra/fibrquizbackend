@@ -12,12 +12,13 @@ const questionSchema = mongoose.Schema(
             type: String,
             required : true,
           }],
-          correctAnswer : 
+          correctAnswer : [
           {
-            type : String,
+            type : Number,
             required : true,
             trim : true,
           }
+        ]
 
     }
 )

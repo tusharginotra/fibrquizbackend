@@ -1,5 +1,5 @@
-const { getUserByEmail,createUser } = require("../services/user.service");
-const {createQuiz, getQuizById} = require("../services/quiz.service")
+const { createUser } = require("../services/user.service");
+const {getQuizByEmail,createQuiz, getQuizById, addScore} = require("../services/quiz.service")
 
 const makeNewQuiz = async(req,res)=>{
     try{
@@ -39,8 +39,7 @@ const createNewUser = async(req,res)=>{
     }
 };
 
-const getQuizes = async (req,res)=>{
-
+const getQuizesById = async (req,res)=>{
     try{
         const id = req.params.id;
         if( id)
@@ -52,13 +51,8 @@ const getQuizes = async (req,res)=>{
         }
         else
         {
-            const body = req.body
-        const email = body.email
-        const data = await getUserByEmail(email)
-        const quizes = data.quizes;
-
         res.status(201).json({
-            quizes
+            "message":"please give id"
               })
 
         }
@@ -70,8 +64,51 @@ const getQuizes = async (req,res)=>{
         })
     }
 }
+const getQuizesByEmail = async (req,res)=>{
+    try{
+        const email = req.params.email;
+        if( email)
+        {
+            const quiz = await getQuizByEmail(email);
+        res.status(201).json({
+            quiz
+              })
+        }
+        else
+        {
+            res.status(201).json({
+            "message": "Please give email in params"
+              })
 
+        }
+            }
+    catch(err)
+    {
+        res.status(200).json({
+            "message" : "error occured in user.controller.js in getQuizes function"
+        })
+    }
+}
+const giveQuiz = async(req,res)=>
+{
+    try
+    {
+        const body = req.body
+        const {id,name,email,score} = body
+        
+        const result = await addScore(id,name,email,score)
+        res.status(200).json({
+            result
+        })
+    }
+    catch(err)
+    {
+        res.status(200).json({
+            "message" : "error occured in user.controller.js in give Quiz function"
+        })
+    }
+}
 
-module.exports={getQuizes,createNewUser,makeNewQuiz}
+module.exports={getQuizesById,getQuizesByEmail,createNewUser,makeNewQuiz,giveQuiz}
 
 

@@ -7,17 +7,11 @@ const QuizSchema = mongoose.Schema(
             type : String,
             required : true,
         },
-        name : {
+        quizName : {
             type: String,
             required : true
          },
-        "questions" : [
-            {
-                id : String,
-                
-                question : questionSchema
-            }
-        ]
+        "questions" : [ questionSchema]
     }
 )
 const Quiz = mongoose.model('Quiz',QuizSchema)
