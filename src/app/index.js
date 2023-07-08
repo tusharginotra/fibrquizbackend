@@ -2,11 +2,15 @@
 const { default: mongoose } = require("mongoose");
 const userRoutes = require("../../routes/user.routes")
 const express = require("express");
+const helmet = require("helmet");
+
 const cors = require('cors')
 const config = require("../../config/config")
 
 const app = express();
 app.use(cors())
+app.use(helmet());
+
 const PORT = config.PORT
 const URI = config.URL
 // const URI = "mongodb://127.0.0.1:27017/fibr"
