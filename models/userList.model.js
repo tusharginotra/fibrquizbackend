@@ -11,16 +11,16 @@ const userListSchema = mongoose.Schema({
             name : String,
             email : {
                type : String,
-               unique : true,
                required : true
             }, 
-            score : Number,
+            score : Number
             
         }
     ]
-},{
+    },
+    {
     _id : false
-}
+    }
 )
 const UserList = mongoose.model('userList',userListSchema)
  module.exports = {UserList};

@@ -2,18 +2,18 @@ const { Quiz } = require("../models/quiz.model");
 const { UserList } = require("../models/userList.model")
 const createQuiz = async(body)=>{
     try{
-    const email = body.email
-    const name = body.name
     const quiz = body.quiz
     
     const result = await Quiz.create(quiz)
-    
+    const id = result._id
+    const data = await UserList.create({_id : id})
+
     return result;
     
     }
     catch(err)
     {
-        return err
+        throw err
     }
 
 }
@@ -44,47 +44,67 @@ const getQuizByEmail = async(email)=>{
 
 
 const addScore = async (id,username,email,score)=>
-{
-    // console.log(id,username,email,score)   
-    const data = await UserList.findOne({"_id" : id})
-    // console.log(data)
+{ 
+    if(! await getQuizById(id))
+    {
+        return {message : "quiz does not exist"}
+    }
+    const data = await UserList.findOne({"_id" : id});
+
+   
+
     if( data)
     {
         const list = data.list
+     
         for( let i=0;i<list.length;i++)
         {
             if(list[i].email == email)
             {
                 
-                return {"message" : "you have already given the quiz"}
+                return {"message" : "you have already given the quiz"};
             }
         }
+      
         list.push({"name":username,"email":email,"score":score})
         
         data.list = list;
-        await data.save()
+      
+        try{
+        const result = await data.save()
+       
+        }catch(err)
+        {
+            console.log(err)
+            throw err
+        }
+        
         return data;
     }
     else
     {
-        console.log("reached")
+
         const userlist = await UserList.create({_id : id}).exec()
-        // console.log(userlist)
         
-        // return userlist
         const list = userlist.list
-        for( let i=0;i<list.length;i++)
-        {
-            if(list[i].email == email)
-            {
-                return {"message" : "you have already given the quiz"}
-            }
-        }
+        
         list.push({"name":username,"email":email,"score":score})
+
         userlist.list = list;
         await userlist.save()
         return userlist;
     }
     
 }
-module.exports = {createQuiz,getQuizById,addScore,getQuizByEmail}
+
+const getUsersOfQuiz = async(id)=>
+{
+    try{
+        const data = await UserList.findOne({_id : id})
+        // console.log(data)
+        return data.list
+    }catch(err){
+        throw err;
+    }
+}
+module.exports = {createQuiz,getQuizById,addScore,getQuizByEmail,getUsersOfQuiz}

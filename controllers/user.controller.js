@@ -1,21 +1,17 @@
 const { createUser } = require("../services/user.service");
-const {getQuizByEmail,createQuiz, getQuizById, addScore} = require("../services/quiz.service")
+const {getQuizByEmail,createQuiz, getQuizById, addScore , getUsersOfQuiz} = require("../services/quiz.service")
 
 const makeNewQuiz = async(req,res)=>{
     try{
         const body = req.body
         const result = await createQuiz(body)
         
-        if(result==null)
-        {
-            result = await createNewUser(body)
-        }
-        res.status(201).json(result)
+        res.status(201).json({result,message : "quiz created"})
     }
     catch(err)
     {
-        res.status(200).json({
-            err : err
+        res.status(400).json({
+            message : err
         })
     }
 };
@@ -32,7 +28,7 @@ const createNewUser = async(req,res)=>{
     }
     catch(err)
     {
-        res.status(200).json({
+        res.status(400).json({
             "message" : "error occured in user.controller.js in createNewUser function",
             "err" : err
         })
@@ -46,7 +42,7 @@ const getQuizesById = async (req,res)=>{
         {
             const quiz = await getQuizById(id);
         res.status(201).json({
-            quiz
+            quiz,message:"found quiz"
               })
         }
         else
@@ -59,8 +55,8 @@ const getQuizesById = async (req,res)=>{
             }
     catch(err)
     {
-        res.status(200).json({
-            "message" : "error occured in user.controller.js in getQuizes function"
+        res.status(400).json({
+            "message" : err
         })
     }
 }
@@ -71,7 +67,7 @@ const getQuizesByEmail = async (req,res)=>{
         {
             const quiz = await getQuizByEmail(email);
         res.status(201).json({
-            quiz
+            quiz,message:"found quiz"
               })
         }
         else
@@ -84,8 +80,8 @@ const getQuizesByEmail = async (req,res)=>{
             }
     catch(err)
     {
-        res.status(200).json({
-            "message" : "error occured in user.controller.js in getQuizes function"
+        res.status(400).json({
+            "message" : err
         })
     }
 }
@@ -98,17 +94,33 @@ const giveQuiz = async(req,res)=>
         
         const result = await addScore(id,name,email,score)
         res.status(200).json({
-            result
+            result ,message :"your score has been submitted"
         })
     }
     catch(err)
     {
-        res.status(200).json({
-            "message" : "error occured in user.controller.js in give Quiz function"
+        res.status(400).json({
+            "message" : err
         })
     }
 }
-
-module.exports={getQuizesById,getQuizesByEmail,createNewUser,makeNewQuiz,giveQuiz}
+const getUserList = async (req,res)=>{
+    try
+    {
+        const id = req.params.id
+        
+        const list = await getUsersOfQuiz(id)
+        res.status(200).json({
+            list
+        })
+    }
+    catch(err)
+    {
+        res.status(400).json({
+            "message" : err
+        })
+    }
+}
+module.exports={getQuizesById,getQuizesByEmail,createNewUser,makeNewQuiz,giveQuiz,getUserList}
 
 
