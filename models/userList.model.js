@@ -11,7 +11,9 @@ const userListSchema = mongoose.Schema({
             name : String,
             email : {
                type : String,
-               required : true
+               required : true,
+               sparse:true
+               
             }, 
             score : Number
             
