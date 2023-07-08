@@ -8,8 +8,8 @@ const config = require("../../config/config")
 const app = express();
 app.use(cors())
 const PORT = config.PORT
-// const URI = config.URL
-const URI = "mongodb://127.0.0.1:27017/fibr"
+const URI = config.URL
+// const URI = "mongodb://127.0.0.1:27017/fibr"
 app.use(express.json())
 
 app.use("/api/v1",userRoutes);
